@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+motion-venv/
+
+src/model/*.pth
+
+# Thư mục chứa dữ liệu
+src/data/*
