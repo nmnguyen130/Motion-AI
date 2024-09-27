@@ -1,11 +1,10 @@
 import os
 import cv2
 import pandas as pd
+from src.utils.file_utils import create_directory_if_not_exists
+from src.utils.video_utils import initialize_video_capture, release_video_capture
+from src.utils.data_utils import load_labels, initialize_dataframe, save_dataframe_to_csv
 from src.utils.hand_landmarks_extractor import extract_landmarks
-
-def create_directory_if_not_exists(directory_path):
-    if not os.path.exists(directory_path):
-        os.makedirs(directory_path)
 
 def capture_from_camera(csv_output_path):
     """
@@ -17,23 +16,17 @@ def capture_from_camera(csv_output_path):
     create_directory_if_not_exists(os.path.dirname(csv_output_path))
 
     # Khởi tạo camera và các biến cần thiết
-    cap = cv2.VideoCapture(0)
+    cap = initialize_video_capture(0)
     
     # Tạo dataframe để lưu điểm đặc trưng
     columns = [f'point_{i}_{axis}' for i in range(1, 22) for axis in ['x', 'y', 'z']] + ['label']  # Tổng cộng 64 cột
-    df = pd.DataFrame(columns=columns)
+    df = initialize_dataframe(columns, csv_output_path)
     current_label = None
 
-    # Kiểm tra xem file CSV đã tồn tại chưa và đọc dữ liệu vào DataFrame
-    if os.path.exists(csv_output_path):
-        df = pd.read_csv(csv_output_path)
-    else:
-        df = pd.DataFrame(columns=columns)
-
     label_map = {
-        '1': 'Fist',
-        '2': 'Thumb_up',
-        '3': 'Thumb_down'
+        '1': 'fist',
+        '2': 'five',
+        '3': 'thumb_up'
     }
 
     while True:
@@ -70,11 +63,9 @@ def capture_from_camera(csv_output_path):
         elif key == ord('q'):
             break
 
-    # Lưu dữ liệu vào file CSV
-    df.to_csv(csv_output_path, index=False)
+    save_dataframe_to_csv(df, csv_output_path)
     
-    cap.release()
-    cv2.destroyAllWindows()
+    release_video_capture(cap)
 
 if __name__ == "__main__":
-    capture_from_camera('src/data/processed/hand_gesture_from_camera.csv')
+    capture_from_camera('src/data/processed/hand_gesture_camera.csv')
