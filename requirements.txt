@@ -1,5 +1,6 @@
 opencv-python
-mediapipe
 numpy
+mediapipe
+pandas
 torch
 torchvision
