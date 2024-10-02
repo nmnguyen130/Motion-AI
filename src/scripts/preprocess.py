@@ -1,6 +1,6 @@
 import os
 import pandas as pd
-from utils.hand_landmarks_extractor import extract_landmarks
+from utils.hand_utils import extract_landmarks
 
 # Đường dẫn dữ liệu
 data_dir = '../data/raw'

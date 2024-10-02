@@ -1,5 +1,4 @@
 import torch
-import pandas as pd
 from torch.utils.data import DataLoader, TensorDataset
 from src.models.hand_gesture_model import HandGestureModel
 from src.utils.data_utils import load_labels, load_data
@@ -16,10 +15,10 @@ def train_from_camera(csv_file, model_save_path):
     # Khởi tạo mô hình
     model = HandGestureModel(len(labels))
     criterion = torch.nn.CrossEntropyLoss()
-    optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+    optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
     
     # Huấn luyện mô hình
-    for epoch in range(100):
+    for epoch in range(60):
         for inputs, targets in dataloader:
             optimizer.zero_grad()
             outputs = model(inputs)

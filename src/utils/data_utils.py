@@ -14,7 +14,7 @@ def load_labels(label_file):
     """
     
     df = pd.read_csv(label_file)
-    labels = {row['label']: int(row['value']) for _, row in df.iterrows()}
+    labels = {row['label']: row['value'] for _, row in df.iterrows()}
     return labels
 
 def load_data(csv_path, labels):
