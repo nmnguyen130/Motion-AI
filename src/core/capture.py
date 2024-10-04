@@ -2,9 +2,8 @@ import os
 import cv2
 import pandas as pd
 from src.utils.file_utils import create_directory_if_not_exists
-from src.utils.video_utils import initialize_video_capture, release_video_capture
-from src.utils.data_utils import load_labels, initialize_dataframe, save_dataframe_to_csv
-from src.utils.hand_utils import initialize_hand_detector, extract_landmarks
+from src.utils.data_utils import initialize_dataframe, save_dataframe_to_csv
+from src.services.camera_service import CameraService
 
 def capture_from_camera(csv_output_path):
     """
@@ -15,9 +14,8 @@ def capture_from_camera(csv_output_path):
 
     create_directory_if_not_exists(os.path.dirname(csv_output_path))
 
-    # Khởi tạo camera và các biến cần thiết
-    cap = initialize_video_capture(0)
-    
+    camera_service = CameraService()
+
     # Tạo dataframe để lưu điểm đặc trưng
     columns = [f'point_{i}_{axis}' for i in range(1, 22) for axis in ['x', 'y', 'z']] + ['label']  # Tổng cộng 64 cột
     df = pd.DataFrame(columns=columns)
@@ -33,15 +31,12 @@ def capture_from_camera(csv_output_path):
         '7': 'fist'
     }
 
-    hands = initialize_hand_detector()
-
     while True:
-        ret, frame = cap.read()
-        if not ret:
+        frame = camera_service.capture_frame()
+        if frame is None:
             break
 
-        # Extract landmarks and draw them
-        landmarks = extract_landmarks(frame, hands)
+        landmarks = camera_service.get_landmarks(frame)
 
         if current_label:
             cv2.putText(frame, f"Current Label: {current_label}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
@@ -52,14 +47,14 @@ def capture_from_camera(csv_output_path):
         # Nhấn phím để điều khiển
         key = cv2.waitKey(1) & 0xFF
 
-        # Nhấn phím số (1-3) để chọn nhãn cho dữ liệu
+        # Nhấn phím số (1-7) để chọn nhãn cho dữ liệu
         if chr(key) in label_map:
             current_label = label_map[chr(key)]
             print(f"Nhãn hiện tại: {current_label}")
 
         # Nhấn 's' để chụp ảnh và ghi dữ liệu
         elif key == ord('s'):
-            if current_label:
+            if current_label and landmarks is not None:
                 landmarks = landmarks.tolist()
                 landmarks.append(current_label)
                 # Lưu vào DataFrame
@@ -71,9 +66,8 @@ def capture_from_camera(csv_output_path):
             break
 
     save_dataframe_to_csv(df, csv_output_path)
-    
-    release_video_capture(cap)
-    hands.close()
+
+    camera_service.release()
 
 if __name__ == "__main__":
-    capture_from_camera('src/data/processed/hand_gesture_camera.csv')
+    capture_from_camera('data/processed/hand_gesture_camera.csv')

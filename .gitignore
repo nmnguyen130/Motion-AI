@@ -8,4 +8,6 @@ motion_env/
 src/model/*.pth
 
 # Thư mục chứa dữ liệu
-src/data/*
+data/*
+experiments/*
+setup.py

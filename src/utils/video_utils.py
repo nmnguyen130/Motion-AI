@@ -11,6 +11,9 @@ def initialize_video_capture(device_index=0):
     - cap: Đối tượng VideoCapture đã được mở.
     """
     cap = cv2.VideoCapture(device_index)
+    cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+    
     if not cap.isOpened():
         print(f"Error: Could not open video device with index {device_index}.")
         exit()
