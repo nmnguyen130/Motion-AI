@@ -14,24 +14,27 @@ Dự án Hand Gesture Detection là một hệ thống nhận diện cử chỉ 
 
 ## Cấu trúc thư mục dự án
 
-hand_gesture_detection/
-├── data/
-│ ├── raw/ # Dữ liệu thô từ camera hoặc ảnh tĩnh
-│ ├── processed/ # Dữ liệu đã được xử lý dưới dạng CSV
-├── models/ # Thư mục chứa mô hình đã huấn luyện và mô hình định nghĩa
-│ ├── finger_gesture_model.py
-│ └── hand_gesture_model.pth # File mô hình đã được huấn luyện
-├── scripts/ # Các script chính để xử lý, huấn luyện và phát hiện
-│ ├── preprocess.py # Script xử lý dữ liệu và lưu dưới dạng CSV
-│ ├── train.py # Script huấn luyện mô hình từ dữ liệu CSV
-│ ├── detect.py # Script phát hiện cử chỉ tay qua camera thời gian thực
-│ ├── capture_camera.py # Mới: Chức năng capture video từ camera
-│ └── train_from_camera.py # Mới: Huấn luyện mô hình từ dữ liệu camera
-├── utils/ # Các hàm tiện ích hỗ trợ xử lý dữ liệu và load mô hình
-│ ├── data_loader.py # Hàm load dữ liệu từ file CSV
-│ ├── hand_landmarks_extractor.py # Hàm trích xuất 21 điểm đặc trưng từ ảnh
-├── requirements.txt # File chứa các thư viện cần thiết để chạy dự án
-├── README.md # Mô tả thông tin dự án và hướng dẫn sử dụng
+motion_detect/
+├── src/
+│ ├── core/
+│ │ ├── capture.py
+│ │ ├── train.py
+│ │ ├── detect.py
+│ ├── models/
+│ │ ├── hand_gesture_model.py
+│ ├── utils/
+│ │ ├── file_utils.py
+│ │ ├── data_utils.py
+│ │ ├── hand_utils.py
+│ │ ├── video_utils.py
+│ ├── services/
+│ │ ├── gesture_recognition_service.py
+│ │ ├── camera_service.py
+│ └── configs/
+│ ├── labels.csv
+│ └── settings.py
+├── requirements.txt
+└── README.md
 
 ---
 

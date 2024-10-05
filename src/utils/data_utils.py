@@ -3,20 +3,6 @@ import numpy as np
 import pandas as pd
 import torch
 
-def load_labels(label_file):
-    """
-    Hàm load labels từ file CSV.
-    Arguments:
-    - label_file: Đường dẫn đến file chứa labels.
-
-    Returns:
-    - labels: Ánh xạ các label thành số nguyên.
-    """
-    
-    df = pd.read_csv(label_file)
-    labels = {row['label']: row['value'] for _, row in df.iterrows()}
-    return labels
-
 def load_data(csv_path, labels):
     """
     Hàm load dữ liệu đã xử lý từ file CSV.

@@ -18,7 +18,7 @@ def capture_from_camera(csv_output_path):
 
     # Tạo dataframe để lưu điểm đặc trưng
     columns = [f'point_{i}_{axis}' for i in range(1, 22) for axis in ['x', 'y', 'z']] + ['label']  # Tổng cộng 64 cột
-    df = pd.DataFrame(columns=columns)
+    df = initialize_dataframe(columns, csv_output_path)
     current_label = None
 
     label_map = {
@@ -36,7 +36,7 @@ def capture_from_camera(csv_output_path):
         if frame is None:
             break
 
-        landmarks = camera_service.get_landmarks(frame)
+        landmarks_list = camera_service.get_landmarks(frame)
 
         if current_label:
             cv2.putText(frame, f"Current Label: {current_label}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
@@ -54,12 +54,13 @@ def capture_from_camera(csv_output_path):
 
         # Nhấn 's' để chụp ảnh và ghi dữ liệu
         elif key == ord('s'):
-            if current_label and landmarks is not None:
-                landmarks = landmarks.tolist()
-                landmarks.append(current_label)
-                # Lưu vào DataFrame
-                df = pd.concat([df, pd.DataFrame([landmarks], columns=df.columns)], ignore_index=True)
-                print(f"Đã ghi dữ liệu cho nhãn: {current_label}")
+            if current_label and landmarks_list:
+                for landmarks in landmarks_list:
+                    landmarks = landmarks.tolist()
+                    landmarks.append(current_label)
+                    # Lưu vào DataFrame
+                    df = pd.concat([df, pd.DataFrame([landmarks], columns=df.columns)], ignore_index=True)
+                    print(f"Đã ghi dữ liệu cho nhãn: {current_label}")
 
         # Nhấn 'q' để thoát
         elif key == ord('q'):
